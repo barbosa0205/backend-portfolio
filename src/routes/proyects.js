@@ -22,20 +22,43 @@ router.get('/proyects', (req, res) => {
 
 //obtener tecnologias
 router.get('/proyect', (req, res) => {
-  const { query } = req
-  let proyect = ProyectsSchema.findOne({ _id: query.id })
-    .populate('technologies')
-    .then((data) => {
-      res.json({
-        data,
+  try {
+    const { query } = req
+
+    if (query.searchBySkill) {
+      let proyects = ProyectsSchema.find({
+        technologies: query.searchBySkill,
       })
-    })
-    .catch((err) => {
-      console.log('err', err)
-      res.json({
-        err,
-      })
-    })
+        .populate('technologies')
+        .then((data) => {
+          res.status(200).json({
+            data,
+          })
+        })
+        .catch((err) => {
+          console.log('err', err)
+          res.status(404).json({
+            err,
+          })
+        })
+    } else {
+      let proyect = ProyectsSchema.findOne({ _id: query.id })
+        .populate('technologies')
+        .then((data) => {
+          res.status(200).json({
+            data,
+          })
+        })
+        .catch((err) => {
+          console.log('err', err)
+          res.status(404).json({
+            err,
+          })
+        })
+    }
+  } catch (error) {
+    res.status(500).send('error interno del servidor')
+  }
 })
 
 module.exports = router
