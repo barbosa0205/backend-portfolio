@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
   })
 })
 
-// CONECCION MONGO
+// CONECCION MONGODB
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
